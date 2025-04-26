@@ -7,22 +7,20 @@ import {
   Image,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useEffect, useState } from "react";
-import useBlogStore from "../../store/blog";
-import axiosInstance from "../../utils/axios";
-import toast from "react-hot-toast";
+import { useState } from "react";
+import useBlogStore from "../store/blog";
 
-const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
+const AddBlog = ({ onClose }: { onClose: any }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const { updateBlog, submitionState, getBlogs } = useBlogStore();
+  const { addBlog, submitionState,getBlogs } = useBlogStore();
 
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       title: "",
       description: "",
-      image: null as File | null,
-      base64Image: "",
+      image: null as File | null, // File Input
+      base64Image: "", // Stores Base64 string
     },
 
     validate: {
@@ -34,22 +32,6 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
       base64Image: (value) => (value ? null : "Image is required"),
     },
   });
-
-  useEffect(() => {
-    const getBlogs = async () => {
-      try {
-        const response = await axiosInstance.get(`/v2/blog/blog/${id}`);
-        form.setFieldValue("title", response.data.blogData.title);
-        form.setFieldValue("description", response.data.blogData.description);
-        form.setFieldValue("base64Image", response.data.blogData.image);
-        setPreview(response.data.blogData.image);
-      } catch (error) {
-        toast.error("Failed to fetch blog", { duration: 3000 });
-        console.error(error);
-      }
-    };
-    getBlogs();
-  }, [id]);
 
   // Convert image to Base64
   const handleImageChange = (file: File | null) => {
@@ -75,19 +57,24 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
     base64Image: string;
   }) => {
     const data = {
-      id,
+      id: null,
       title: values.title,
       description: values.description,
       image: values.base64Image,
     };
-    await updateBlog(data);
+    await addBlog(data);
     await getBlogs();
     onClose();
   };
 
+  // Check if form is valid
+  // const isFormValid =
+  //   form.values.title.trim().length > 0 &&
+  //   form.values.description.trim().length > 10 &&
+  //   form.values.base64Image !== "";
+
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      {id}
       <TextInput
         withAsterisk
         label="Title"
@@ -132,11 +119,11 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
 
       <Group justify="flex-end" mt="md">
         <Button type="submit" disabled={!!submitionState}>
-          Update
+          Submit
         </Button>
       </Group>
     </form>
   );
 };
 
-export default EditBlog;
+export default AddBlog;

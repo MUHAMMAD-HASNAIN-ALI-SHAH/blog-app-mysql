@@ -1,6 +1,6 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
-import useBlogStore from "../../store/blog";
+import useBlogStore from "../store/blog";
 import EditBlog from "./EditBlog";
 import { useState } from "react";
 

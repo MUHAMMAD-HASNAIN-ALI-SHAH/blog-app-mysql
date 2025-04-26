@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import axiosInstance from "../utils/axios";
-import { completelogout } from "../utils/libs";
 import toast from "react-hot-toast";
 
 interface blog {
@@ -40,10 +39,6 @@ const useBlogStore = create<BlogStore>((set) => ({
       });
       set({ submitionState: false });
     } catch (error: any) {
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error("Failed to update blog", { duration: 3000 });
       console.error(error);
       set({ submitionState: false });
@@ -55,10 +50,6 @@ const useBlogStore = create<BlogStore>((set) => ({
       set({ blogs: response.data.blogs });
     } catch (error: any) {
       console.log(error.response.data.status);
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
     }
   },
   deleteBlog: async (id) => {
@@ -68,10 +59,6 @@ const useBlogStore = create<BlogStore>((set) => ({
         duration: 3000,
       });
     } catch (error: any) {
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error(error?.response.data.msg, { duration: 3000 });
       console.error(error);
       set({ submitionState: false });
@@ -86,10 +73,6 @@ const useBlogStore = create<BlogStore>((set) => ({
       });
       set({ submitionState: false });
     } catch (error: any) {
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error("Failed to update blog", { duration: 3000 });
       console.error(error);
       set({ submitionState: false });
@@ -102,10 +85,6 @@ const useBlogStore = create<BlogStore>((set) => ({
         duration: 3000,
       });
     } catch (error: any) {
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error("Failed to add comment", { duration: 3000 });
       console.error(error);
     }
@@ -117,10 +96,6 @@ const useBlogStore = create<BlogStore>((set) => ({
         duration: 3000,
       });
     } catch (error: any) {
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error("Failed to add comment", { duration: 3000 });
       console.error(error);
     }
@@ -130,10 +105,6 @@ const useBlogStore = create<BlogStore>((set) => ({
       const response = await axiosInstance.get(`/v2/blog/likes`);
       set({ likes: response.data.likes });
     } catch (error: any) {
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error("Failed to fetch likes", { duration: 3000 });
       console.error(error);
     }
@@ -144,10 +115,6 @@ const useBlogStore = create<BlogStore>((set) => ({
       set({ comments: response.data.comments });
     } catch (error: any) {
       console.log(error.response.status);
-      if (error?.response.status === 401) {
-        completelogout();
-        return;
-      }
       toast.error("Failed to fetch comments", { duration: 3000 });
       console.error(error);
     }

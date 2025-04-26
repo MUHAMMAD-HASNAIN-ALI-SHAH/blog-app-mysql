@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import DashboardData from "../components/dashboard/DashboardData";
+import DashboardData from "../components/DashboardData";
 import useAuthStore from "../store/auth";
 import { useEffect } from "react";
 import useBlogStore from "../store/blog";
-import DashboardBlogs from "../components/dashboard/DashboardBlogs";
+import DashboardBlogs from "../components/DashboardBlogs";
 
 const Dashboard = () => {
   const { isAuthenticated } = useAuthStore();

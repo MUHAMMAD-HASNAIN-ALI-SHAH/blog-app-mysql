@@ -1,7 +1,7 @@
 import { Button, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import useBlogStore from "../../store/blog";
-import useHomeBlogStore from "../../store/home";
+import useBlogStore from "../store/blog";
+import useHomeBlogStore from "../store/home";
 
 interface CommentsProps {
   id: number;
@@ -44,7 +44,7 @@ const AddComment = ({ id,onClose,blogId }: CommentsProps) => {
           {...form.getInputProps("comment")}
         />
         <Group justify="flex-end" mt="md">
-          <Button type="submit" disabled={!!submitionState && !!localStorage.getItem("isAuthenticated")}>
+          <Button type="submit" disabled={!!submitionState}>
             Submit
           </Button>
         </Group>

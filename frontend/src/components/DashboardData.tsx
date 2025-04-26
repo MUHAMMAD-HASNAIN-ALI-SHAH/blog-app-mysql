@@ -1,7 +1,7 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
 import AddBlog from "./AddBlog";
-import useBlogStore from "../../store/blog";
+import useBlogStore from "../store/blog";
 import { useEffect } from "react";
 
 const DashboardData = () => {

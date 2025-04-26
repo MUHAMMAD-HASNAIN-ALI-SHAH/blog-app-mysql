@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
-import Comments from "./dashboard/Comments";
+import Comments from "./Comments";
 import { useEffect, useState } from "react";
 import axiosInstance from "../utils/axios";
 import useBlogStore from "../store/blog";
 import useHomeBlogStore from "../store/home";
+import useAuthStore from "../store/auth";
+import toast from "react-hot-toast";
 
 const blog = () => {
   const { id } = useParams();
@@ -11,6 +13,7 @@ const blog = () => {
   const { like } = useBlogStore();
   const [liked, setLiked] = useState<boolean>(false);
   const { getBlogData, blog } = useHomeBlogStore();
+  const { isAuthenticated } = useAuthStore();
 
   if (blogId === null || isNaN(blogId)) {
     return <p>Error: Invalid blog ID</p>;
@@ -35,7 +38,10 @@ const blog = () => {
 
   const LikeBlog = async (blogId: number | null) => {
     if (!blogId) return;
-    if (!localStorage.getItem("user")) return;
+    if (!isAuthenticated) {
+      toast.error("Please login to like a blog", { duration: 3000 });
+      return;
+    }
     await like(blogId);
     await getBlogData(blogId);
     await fetchLikeStatus();

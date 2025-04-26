@@ -1,16 +1,4 @@
-import useAuthStore from "../store/auth";
-
 const Hero = () => {
-
-  const {isAuthenticated} = useAuthStore();
-
-  const handleClick = () => {
-    if (isAuthenticated) {
-      window.location.href = "/dashboard";
-    } else {
-      window.location.href = "/signin";
-    }
-  };
 
   return (
     <div className="hero bg-transparent min-h-[80vh]">
@@ -23,7 +11,7 @@ const Hero = () => {
             express, or inspire, this is your space to create and discover new
             ideas.
           </p>
-          <button onClick={handleClick} className="btn btn-primary">Get Started</button>
+          <button className="btn btn-primary">Get Started ⬇️</button>
         </div>
       </div>
     </div>

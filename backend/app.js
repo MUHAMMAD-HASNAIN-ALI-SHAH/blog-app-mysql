@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use("/api/v2/blog", blogRoute);
 app.use('/api/v1/auth', userRoute)
 
-PORT = process.env.port
+PORT = process.env.PORT
 
 app.listen(PORT, () => {
     console.log(`Blog server is running on port ${PORT}`);

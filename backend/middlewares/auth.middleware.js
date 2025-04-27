@@ -18,7 +18,7 @@ const protectedRoute = async (req, res, next) => {
         }
 
         // Check if the user exists in MySQL
-        const [users] = await db.promise().query("SELECT * FROM users WHERE id = ?", [isVerified.userId]);
+        const [users] = await db.promise().query("SELECT * FROM USERS WHERE id = ?", [isVerified.userId]);
 
         if (users.length === 0) {
             return res.status(404).json({ msg: "No user found" });

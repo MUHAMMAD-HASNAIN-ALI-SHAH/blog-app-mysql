@@ -1,7 +1,7 @@
 const Hero = () => {
 
   return (
-    <div className="hero bg-transparent min-h-[80vh]">
+    <div className="hero bg-transparent min-h-[70vh]">
       <div className="hero-content text-center">
         <div className="max-w-md">
           <h1 className="text-2xl  md:text-3xl font-bold">Welcome to Our Blogging Hub</h1>

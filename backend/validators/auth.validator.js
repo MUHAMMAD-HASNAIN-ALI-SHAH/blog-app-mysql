@@ -32,10 +32,17 @@ const registerValidator = async (req, res, next) => {
     }
 
     // Check if the email is less than 20 characters
-    if (email.length > 20) {
+    if (email.length > 40) {
       return res
         .status(400)
-        .json({ msg: "Email must be less than 20 characters" });
+        .json({ msg: "Email must be less than 40 characters" });
+    }
+
+    // check password length
+    if (password.length < 8 || password.length > 20) {
+      return res
+        .status(400)
+        .json({ msg: "Password must be between 8 and 20 characters" });
     }
 
     next();

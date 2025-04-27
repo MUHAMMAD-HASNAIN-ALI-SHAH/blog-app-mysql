@@ -12,7 +12,7 @@ const register = async (req, res) => {
 
         // Check if the user already exists
         const [existingUser] = await db.promise().query(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT * FROM USERS WHERE email = ?",
             [getEmail]
         );
 
@@ -26,7 +26,7 @@ const register = async (req, res) => {
 
         // Insert user into database
         const [newUser] = await db.promise().query(
-            "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+            "INSERT INTO USERS (username, email, password) VALUES (?, ?, ?)",
             [getUsername, getEmail, hashedPassword]
         );
 
@@ -59,7 +59,7 @@ const login = async (req, res) => {
         }
 
         // Fetch user from DB
-        const [users] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
+        const [users] = await db.promise().query("SELECT * FROM USERS WHERE email = ?", [email]);
 
         if (users.length === 0) {
             return res.status(400).json({ msg: "User does not exist" });

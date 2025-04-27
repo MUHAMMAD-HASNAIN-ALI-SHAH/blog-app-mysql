@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form";
-import { TextInput, Button, PasswordInput } from "@mantine/core";
+import { TextInput, PasswordInput } from "@mantine/core";
 import useAuthStore from "../store/auth";
 
 const SigninComponent = ({
@@ -9,7 +9,7 @@ const SigninComponent = ({
   close: () => void;
   setAuthModal: (state: string) => void;
 }) => {
-  const { signin } = useAuthStore();
+  const { signin, authLoader } = useAuthStore();
   const form = useForm({
     initialValues: { email: "", password: "" },
 
@@ -46,7 +46,7 @@ const SigninComponent = ({
         {...form.getInputProps("password")}
       />
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-3">
         <p className="pt-3">
           No account?{" "}
           <button
@@ -57,9 +57,9 @@ const SigninComponent = ({
           </button>
         </p>
 
-        <Button type="submit" mt="sm">
+        <button disabled={!!authLoader} className="btn btn-primary" type="submit">
           Signin
-        </Button>
+        </button>
       </div>
     </form>
   );

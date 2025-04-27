@@ -16,7 +16,7 @@ const addBlog = async (req, res) => {
     const [addBlog] = await db
       .promise()
       .query(
-        "INSERT INTO blogs (title, description, image, userId) VALUES (?, ?, ?, ?)",
+        "INSERT INTO BLOGS (title, description, image, userId) VALUES (?, ?, ?, ?)",
         [title, description, imageUrl, user.id]
       );
 
@@ -33,7 +33,7 @@ const editBlog = async (req, res) => {
 
     const [blog] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE id = ?", [id]);
+      .query("SELECT * FROM BLOGS WHERE id = ?", [id]);
 
     if (blog.length === 0) {
       return res.status(404).json({ msg: "Blog not found" });
@@ -62,7 +62,7 @@ const editBlog = async (req, res) => {
     await db
       .promise()
       .query(
-        "UPDATE blogs SET title = ?, description = ?, image = ? WHERE id = ?",
+        "UPDATE BLOGS SET title = ?, description = ?, image = ? WHERE id = ?",
         [title, description, imageUrl, id]
       );
 
@@ -80,7 +80,7 @@ const deleteBlog = async (req, res) => {
 
     const [blog] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE id = ?", [id]);
+      .query("SELECT * FROM BLOGS WHERE id = ?", [id]);
 
     if (blog.length === 0) {
       return res.status(404).json({ msg: "Blog not found" });
@@ -94,7 +94,7 @@ const deleteBlog = async (req, res) => {
 
     await cloudinary.uploader.destroy(`blogs_data/${imagePublicKey}`);
 
-    await db.promise().query("DELETE FROM blogs WHERE id = ?", [id]);
+    await db.promise().query("DELETE FROM BLOGS WHERE id = ?", [id]);
 
     return res.status(200).json({ msg: "Blog deleted successfully" });
   } catch (err) {
@@ -108,7 +108,7 @@ const getMyBlogs = async (req, res) => {
 
     const [getMyBlogs] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE userId = ?", [user.id]);
+      .query("SELECT * FROM BLOGS WHERE userId = ?", [user.id]);
 
     if (getMyBlogs.length === 0) {
       return res.status(404).json({ blogs: [] });
@@ -122,7 +122,7 @@ const getMyBlogs = async (req, res) => {
 
 const allBlogs = async (req, res) => {
   try {
-    const [getBlogs] = await db.promise().query("SELECT * FROM blogs");
+    const [getBlogs] = await db.promise().query("SELECT * FROM BLOGS");
 
     if (getBlogs.length === 0) {
       return res.status(404).json({ blogs: [] });
@@ -136,11 +136,12 @@ const allBlogs = async (req, res) => {
 
 const blogData = async (req, res) => {
   try {
+    
     const { id } = req.params;
 
     const [blogData] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE id = ?", [id]);
+      .query("SELECT * FROM BLOGS WHERE id = ?", [id]);
 
     if (blogData.length === 0) {
       return res.status(404).json({ msg: "No blog found" });
@@ -148,7 +149,7 @@ const blogData = async (req, res) => {
 
     const [comments] = await db
       .promise()
-      .query("SELECT * FROM comments WHERE blogID = ?", [id]);
+      .query("SELECT * FROM COMMENTS WHERE blogID = ?", [id]);
 
     if (comments.length === 0) {
       blogData[0].comments = [];
@@ -158,7 +159,7 @@ const blogData = async (req, res) => {
 
     const [likes] = await db
       .promise()
-      .query("SELECT * FROM likes WHERE blogID = ?", [id]);
+      .query("SELECT * FROM LIKES WHERE blogID = ?", [id]);
 
     if (likes.length === 0) {
       blogData[0].likes = [];
@@ -198,7 +199,7 @@ const addComment = async (req, res) => {
 
     const [rows] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE id = ?", [id]);
+      .query("SELECT * FROM BLOGS WHERE id = ?", [id]);
 
     if (rows.length === 0) {
       return res.status(404).json({ msg: "No blog found" });
@@ -207,7 +208,7 @@ const addComment = async (req, res) => {
     await db
       .promise()
       .query(
-        "INSERT INTO comments (comment, blogID, userID, username) VALUES (?, ?, ?, ?)",
+        "INSERT INTO COMMENTS (comment, blogID, userID, username) VALUES (?, ?, ?, ?)",
         [comment, id, user.id, user.username]
       );
 
@@ -223,7 +224,7 @@ const totalComment = async (req, res) => {
 
     const [getallBlogs] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE userID = ?", [user.id]);
+      .query("SELECT * FROM BLOGS WHERE userID = ?", [user.id]);
 
     if (getallBlogs.length === 0) {
       return res.status(200).json({ comments: 0 });
@@ -234,7 +235,7 @@ const totalComment = async (req, res) => {
     for (let i = 0; i < getallBlogs.length; i++) {
       const [getComments] = await db
         .promise()
-        .query("SELECT * FROM comments WHERE blogID = ?", [getallBlogs[i].id]);
+        .query("SELECT * FROM COMMENTS WHERE blogID = ?", [getallBlogs[i].id]);
 
       totalComments += getComments.length;
     }
@@ -251,7 +252,7 @@ const like = async (req, res) => {
 
     const [blog] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE id = ?", [id]);
+      .query("SELECT * FROM BLOGS WHERE id = ?", [id]);
 
     if (blog.length === 0) {
       return res.status(404).json({ msg: "No blog found" });
@@ -259,7 +260,7 @@ const like = async (req, res) => {
 
     const [alreadyLiked] = await db
       .promise()
-      .query("SELECT * FROM likes WHERE blogID = ? AND userID = ?", [
+      .query("SELECT * FROM LIKES WHERE blogID = ? AND userID = ?", [
         id,
         user.id,
       ]);
@@ -267,7 +268,7 @@ const like = async (req, res) => {
     if (alreadyLiked.length > 0) {
       await db
         .promise()
-        .query("DELETE FROM likes WHERE blogID = ? AND userID = ?", [
+        .query("DELETE FROM LIKES WHERE blogID = ? AND userID = ?", [
           id,
           user.id,
         ]);
@@ -277,7 +278,7 @@ const like = async (req, res) => {
 
     await db
       .promise()
-      .query("INSERT INTO likes (blogID, userID) VALUES (?, ?)", [id, user.id]);
+      .query("INSERT INTO LIKES (blogID, userID) VALUES (?, ?)", [id, user.id]);
 
     return res.status(200).json({ msg: "Liked" });
   } catch (err) {
@@ -291,7 +292,7 @@ const totalLikes = async (req, res) => {
 
     const [getallBlogs] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE userID = ?", [user.id]);
+      .query("SELECT * FROM BLOGS WHERE userID = ?", [user.id]);
 
     if (getallBlogs.length === 0) {
       return res.status(200).json({ likes: 0 });
@@ -302,7 +303,7 @@ const totalLikes = async (req, res) => {
     for (let i = 0; i < getallBlogs.length; i++) {
       const [getLikes] = await db
         .promise()
-        .query("SELECT * FROM likes WHERE blogID = ?", [getallBlogs[i].id]);
+        .query("SELECT * FROM LIKES WHERE blogID = ?", [getallBlogs[i].id]);
 
       totalLikes += getLikes.length;
     }
@@ -314,13 +315,14 @@ const totalLikes = async (req, res) => {
 
 const checkLiked = async (req, res) => {
   try {
+     
     const user = req.user;
 
     const { id } = req.params;
 
     const [liked] = await db
       .promise()
-      .query("SELECT * FROM likes WHERE blogID = ? AND userID = ?", [
+      .query("SELECT * FROM LIKES WHERE blogID = ? AND userID = ?", [
         id,
         user.id,
       ]);
@@ -337,19 +339,20 @@ const checkLiked = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const { search } = req.body;
+    const { search } = req.query;
 
-    const [blogs] = await db
+    const [getBlogs] = await db
       .promise()
-      .query("SELECT * FROM blogs WHERE title LIKE ?", [`%${search}%`]);
+      .query(
+        "SELECT * FROM BLOGS WHERE title LIKE ? OR description LIKE ?",
+        [`%${search}%`, `%${search}%`]
+      );
 
-    if (blogs.length === 0) {
+    if (getBlogs.length === 0) {
       return res.status(200).json({ blogs: [] });
     }
 
-    return res.status(200).json({ blogs });
-
-    return res.status(200).json({ liked: false });
+    return res.status(200).json({ blogs: getBlogs });
   } catch (err) {
     return res.status(500).json({ msg: err.message });
   }
@@ -357,17 +360,16 @@ const search = async (req, res) => {
 
 module.exports = {
   addBlog,
-  deleteBlog,
   editBlog,
+  deleteBlog,
   getMyBlogs,
   allBlogs,
   blogData,
   checkBlogOwnerShip,
   addComment,
-  addComment,
-  like,
-  checkLiked,
   totalComment,
+  like,
   totalLikes,
+  checkLiked,
   search,
 };

@@ -1,11 +1,11 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
 import useBlogStore from "../store/blog";
-import EditBlog from "./EditBlog";
 import { useState } from "react";
+import EditBlog from "./EditBlog";
 
 const DashboardBlogs = () => {
-  const { blogs, deleteBlog, getBlogs } = useBlogStore();
+  const { blogs, deleteBlog, getBlogs, deleteState } = useBlogStore();
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedBlogId, setSelectedBlogId] = useState<number | null>(null);
 
@@ -72,6 +72,7 @@ const DashboardBlogs = () => {
                       blog.id !== null && deleteBlogFunction(blog.id)
                     }
                     className="btn btn-error btn-sm"
+                    disabled={!!deleteState}
                   >
                     Delete
                   </button>

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import useAuthStore from "./store/auth";
@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Blog from "./pages/Blog";
 
 function App() {
-  const { verify } = useAuthStore();
+  const { verify, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog/:id" element={<Blog />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
       </Routes>
     </div>
   );

@@ -11,6 +11,8 @@ interface blog {
 
 interface BlogStore {
   submitionState: Boolean;
+  deleteState: Boolean;
+  commentLoadingState: Boolean;
   blogs: blog[];
   likes: number;
   comments: number;
@@ -29,7 +31,9 @@ const useBlogStore = create<BlogStore>((set) => ({
   blogs: [],
   likes: 0,
   comments: 0,
+  deleteState: false,
   submitionState: false,
+  commentLoadingState: false,
   addBlog: async (blog) => {
     set({ submitionState: true });
     try {
@@ -54,14 +58,16 @@ const useBlogStore = create<BlogStore>((set) => ({
   },
   deleteBlog: async (id) => {
     try {
+      set({ deleteState: true });
       const response = await axiosInstance.delete(`/v2/blog/${id}`);
       toast.success(response.data.msg, {
         duration: 3000,
       });
+      set({ deleteState: false });
     } catch (error: any) {
       toast.error(error?.response.data.msg, { duration: 3000 });
       console.error(error);
-      set({ submitionState: false });
+      set({ deleteState: false });
     }
   },
   updateBlog: async (blog) => {
@@ -80,13 +86,16 @@ const useBlogStore = create<BlogStore>((set) => ({
   },
   addComment: async (data, id) => {
     try {
+      set({ commentLoadingState: true });
       const response = await axiosInstance.post(`/v2/blog/comment/${id}`, data);
       toast.success(response.data.msg, {
         duration: 3000,
       });
+      set({ commentLoadingState: false });
     } catch (error: any) {
       toast.error("Failed to add comment", { duration: 3000 });
       console.error(error);
+      set({ commentLoadingState: false });
     }
   },
   like: async (id) => {

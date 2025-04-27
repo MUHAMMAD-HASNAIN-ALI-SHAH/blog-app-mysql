@@ -10,7 +10,7 @@ interface CommentsProps {
 }
 
 const AddComment = ({ id,onClose,blogId }: CommentsProps) => {
-  const { submitionState, addComment } = useBlogStore();
+  const { addComment,commentLoadingState } = useBlogStore();
   const { getBlogData } = useHomeBlogStore();
 
   const form = useForm({
@@ -44,7 +44,7 @@ const AddComment = ({ id,onClose,blogId }: CommentsProps) => {
           {...form.getInputProps("comment")}
         />
         <Group justify="flex-end" mt="md">
-          <Button type="submit" disabled={!!submitionState}>
+          <Button type="submit" disabled={!!commentLoadingState}>
             Submit
           </Button>
         </Group>

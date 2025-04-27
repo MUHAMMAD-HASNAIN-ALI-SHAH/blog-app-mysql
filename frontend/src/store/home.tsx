@@ -31,6 +31,7 @@ interface BlogStore {
   blog: blogData | null;
   getBlogs: () => void;
   getBlogData: (id: number | null) => void;
+  clearStateBlogData: () => void;
 }
 
 const useHomeBlogStore = create<BlogStore>((set) => ({
@@ -47,10 +48,10 @@ const useHomeBlogStore = create<BlogStore>((set) => ({
       const response = await axiosInstance.get(`/v2/blog/blog/${id}`);
       set({ blog: response.data.blogData });
     } catch (error) {
-      window.location.href = "/";
       return null;
     }
   },
+  clearStateBlogData: () => set({ blog: null }),
 }));
 
 export default useHomeBlogStore;

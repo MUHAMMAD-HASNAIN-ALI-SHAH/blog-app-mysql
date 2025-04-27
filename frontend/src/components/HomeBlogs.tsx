@@ -13,14 +13,13 @@ const HomeBlogs = () => {
   const openDetails = (id: number) => {
     navigate(`/blog/${id}`);
   };
-
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Dashboard Blogs</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-        {blogs.length > 0 ? (
-          blogs.map((blog) => (
+      {blogs.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {blogs.map((blog) => (
             <div
               key={blog.id}
               className="card bg-base-100 w-full border border-base-200 rounded-2xl shadow-lg"
@@ -54,11 +53,15 @@ const HomeBlogs = () => {
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-500 w-full text-center">No blogs available.</p>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full p-4">
+          <p className="text-gray-500 w-full text-center">
+            No blogs available.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

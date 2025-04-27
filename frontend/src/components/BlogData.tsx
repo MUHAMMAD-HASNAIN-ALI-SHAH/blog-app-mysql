@@ -12,6 +12,9 @@ const blog = () => {
   const blogId = id ? parseInt(id, 10) : null;
   const { like } = useBlogStore();
   const [liked, setLiked] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [likeStatusLoading, setLikeStatusLoading] = useState<boolean>(false);
+  const [likeSatusFailed, setLikeStatusFailed] = useState<boolean>(false);
   const { getBlogData, blog } = useHomeBlogStore();
   const { isAuthenticated } = useAuthStore();
 
@@ -20,15 +23,20 @@ const blog = () => {
   }
 
   useEffect(() => {
+    useHomeBlogStore.getState().clearStateBlogData();
     getBlogData(blogId);
-  }, []);
+  }, [id]);
 
   const fetchLikeStatus = async () => {
     try {
+      setLikeStatusLoading(true);
       const response = await axiosInstance.get(`/v2/blog/like/${id}`);
+      setLikeStatusLoading(false);
       setLiked(response.data.liked);
     } catch (error) {
-      console.error("Error fetching like status:", error);
+      toast.error("Error fetching like status", { duration: 3000 });
+      setLikeStatusLoading(false);
+      setLikeStatusFailed(true);
     }
   };
 
@@ -42,9 +50,16 @@ const blog = () => {
       toast.error("Please login to like a blog", { duration: 3000 });
       return;
     }
-    await like(blogId);
-    await getBlogData(blogId);
-    await fetchLikeStatus();
+    setLoading(true);
+    try {
+      await like(blogId);
+      await getBlogData(blogId);
+      await fetchLikeStatus();
+    } catch (error) {
+      console.error("Error liking the blog:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,13 +77,25 @@ const blog = () => {
               {blog.description}
             </p>
             <div className="flex flex-col items-center justify-center">
-              <i
-                onClick={() => LikeBlog(blog.id)}
-                className={`ri-heart-3-${
-                  liked ? "fill" : "line"
-                } text-2xl cursor-pointer`}
-              ></i>
-              <p>{blog.likes?.length || 0}</p>
+              {!likeStatusLoading ? (
+                !likeSatusFailed ? (
+                  <>
+                    <button
+                      onClick={() => LikeBlog(blog.id)}
+                      disabled={loading}
+                      className={`ri-heart-3-${
+                        liked ? "fill" : "line"
+                      } text-2xl cursor-pointer ${loading ? "opacity-50" : ""}`}
+                      style={{ pointerEvents: loading ? "none" : "auto" }}
+                    ></button>
+                    <p>{blog.likes?.length || 0}</p>
+                  </>
+                ) : (
+                  <p className="text-red-500">⚠️ Error fetching like status</p>
+                )
+              ) : (
+                <span className="loading loading-spinner loading-xl"></span>
+              )}
             </div>
             <Comments
               id={blogId}
@@ -77,7 +104,9 @@ const blog = () => {
             />
           </>
         ) : (
-          <p>Loading blog data...</p>
+          <div className="flex justify-center items-center h-[80vh]">
+            <span className="loading loading-spinner loading-xl"></span>
+          </div>
         )}
       </div>
     </div>
